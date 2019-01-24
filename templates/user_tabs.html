@@ -1,0 +1,69 @@
+<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab"
+           aria-selected="true">Info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="posts-tab" data-toggle="tab" href="#posts" role="tab"
+           aria-selected="false">Posts</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="comments-tab" data-toggle="tab" href="#comments" role="tab"
+           aria-selected="false">Comments</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="comments-tab" data-toggle="tab" href="#marks" role="tab"
+           aria-selected="false">Marks</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="info" role="tabpanel">
+        <p>Email: <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+    </div>
+    <div class="tab-pane" id="posts" role="tabpanel">
+        {% if user.posts.all|length > 0 %}
+            {% for post in user.posts.all %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h4 class="d-flex justify-content-between">
+                            <a href="{% url 'post' post.pk %}">{{ post.title }}</a>
+                            <small class="font-weight-normal">{{ post.updated_at }}</small>
+                        </h4>
+                        <p>{{ post.text|truncatewords:10 }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No posts</p>
+        {% endif %}
+    </div>
+    <div class="tab-pane" id="comments" role="tabpanel">
+        {% if user.comments.all|length > 0 %}
+            {% for comment in user.comments.all %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p>{{ comment.text|truncatewords:10 }}</p>
+                        <span>To post: <a href="{% url 'post' comment.post.pk %}">{{ comment.post.title }}</a></span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No comments</p>
+        {% endif %}
+    </div>
+    <div class="tab-pane" id="marks" role="tabpanel">
+        {% if user.marks.all|length > 0 %}
+            {% for mark in user.marks.all %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        Marked <a href="{% url 'post' mark.post.pk %}">{{ mark.post.title }}</a>
+                        as {{ mark.get_mark_display }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No marks</p>
+        {% endif %}
+    </div>
+</div>

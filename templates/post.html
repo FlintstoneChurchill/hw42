@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h1>
+            {{ post.title }}
+        </h1>
+        <span>(Last update: {{ post.updated_at }})</span>
+    </div>
+    <p>
+        Author: <a href="{% url 'user' post.user.pk %}">{{ post.user.name }}</a>
+    </p>
+    <hr>
+    <p>{{ post.text }}</p>
+    <hr>
+
+    <a {% if post.marks.all|length > 0 %}href="#" data-toggle="modal" data-target="#exampleModal"{% endif %} >
+        Marks <span class="badge badge-secondary">{{ post.marks.all|length }}</span>
+    </a>
+
+    <hr>
+
+    <h5>Comments:</h5>
+    {% for comment in post.comments.all %}
+        <div class="card mb-3">
+            <div class="card-body">
+                {{ comment.user.name }} said:
+                <hr>
+                <p>{{ comment.text }}</p>
+                <hr>
+                at {{ comment.created_at }}
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Marks for {{ post.title }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% for mark in post.marks.all %}
+                        {{ mark.get_mark_display }} by <a href="{% url 'user' mark.user.pk %}">{{ mark.user.name }}</a>
+                        <br>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
